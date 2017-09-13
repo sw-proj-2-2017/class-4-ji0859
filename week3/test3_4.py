@@ -4,7 +4,7 @@ dbfilename = 'test3_4.dat'
 
 #예외처리
 #처음으로 입력하는 값이 명령어 다음에 무조건 이름 숫자가 들어가면 예외처리
-# del 하여모든수가지워졌을경우
+# del 하여모든수가지워졌을경우 find를사용했을때못찾은경우
 def readScoreDB():
     try:
         fH = open(dbfilename, 'rb')
