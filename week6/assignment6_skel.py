@@ -14,134 +14,70 @@ class ScoreDB(QWidget):
         self.dbfilename = 'assignment6.dat'
         self.scoredb = []
         self.readScoreDB()
-        self.showScoreDB()
+        self.showScoreDB(self.scoredb, self.key.currentText())
         
         
     def initUI(self):
-        '''
-        label = ['Name', 'Age', "Score", 'Amount']
-        push = ['Add','Del', 'Find', 'Inc', 'Show']
-        p_d = ['AddClick', 'DelClick', 'FindClick', 'IncClick', 'ShowClick']
 
-        self.list = []
-        self.list2 = []
-        self.plist = []
-        self.txt = QTextEdit()
-        self.combo = QComboBox(self)
+        self.labels = {'name' : QLabel('Name: '), 'age' : QLabel('Age: '), 'score' : QLabel('Score: '),
+                      'amount' : QLabel('Amount: '), 'key' : QLabel("Key: "), 'result' : QLabel('Result')}
+        self.edits = {'name' : QLineEdit(), 'age' : QLineEdit(), 'score' : QLineEdit(), 'amount' : QLineEdit(),
+                     'result' : QTextEdit()}
+        self.buttons = {'add' : QPushButton('Add'), 'del' : QPushButton('Del'), 'find' : QPushButton('Find'),
+                       'inc' : QPushButton('Inc'), 'show' : QPushButton('show')}
+        self.key = QComboBox()
+        self.key.addItem('Name')
+        self.key.addItem('Age')
+        self.key.addItem('Score')
 
-        key = QLabel("key", self)
-        result = QLabel("Result", self)
-        self.scdb = self.readScoreDB()
-        print(self.scdb)
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.labels['name'])
+        hbox1.addWidget(self.edits['name'])
+        hbox1.addWidget(self.labels['age'])
+        hbox1.addWidget(self.edits['age'])
+        hbox1.addWidget(self.labels['score'])
+        hbox1.addWidget(self.edits['score'])
 
-        for i in label:
-            self.list.append(QLabel(i,self))
-            self.list2.append(QLineEdit(self))
-            self.combo.addItem(i)
-            
-        '''
-        self.list = []
-        self.list2 = []
-        # Layout name age score
-        name = QLabel("Name", self)
-        name.move(15, 10)
-        
-        age = QLabel("Age", self)
-        age.move(195, 10)
-        
-        score = QLabel("Score", self)
-        score.move(375, 10)
-        amount = QLabel("Amount", self)
-        amount.move(155, 30)
-        key = QLabel("Key", self)
-        key.move(400, 30)
+        hbox2 = QHBoxLayout()
+        hbox2.addStretch(1)
+        hbox2.addWidget(self.labels['amount'])
+        hbox2.addWidget(self.edits['amount'])
+        hbox2.addWidget(self.key)
 
-        result = QLabel("Result", self)
-        result.move(15, 450)
-        
-        nameEdit = QLineEdit()
-        ageEdit = QLineEdit()
-        scoreEdit = QLineEdit()
-        amountEdit = QLineEdit()
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.buttons['add'])
+        hbox3.addWidget(self.buttons['del'])
+        hbox3.addWidget(self.buttons['find'])
+        hbox3.addWidget(self.buttons['inc'])
+        hbox3.addWidget(self.buttons['show'])
 
-        
-        keyEdit = QComboBox(self)
-        keyEdit.addItem("Name")
-        keyEdit.addItem("Age")
-        keyEdit.addItem("Score")
+        hbox4 = QHBoxLayout()
+        hbox4.addWidget(self.labels['result'])
 
-        keyEdit.move(450, 30)
-        keyEdit.activated[str].connect(self.onActivated)
-        
-        resultEdit = QTextEdit()
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox1)
+        vbox.addLayout(hbox2)
+        vbox.addLayout(hbox3)
+        vbox.addLayout(hbox4)
+        vbox.addWidget(self.edits['result'])
 
-        grid = QGridLayout()
-        grid.setSpacing(10)
+        self.setLayout(vbox)
 
-        grid.addWidget(name, 1, 0)
-        grid.addWidget(nameEdit, 1, 1)
-
-        grid.addWidget(age, 1, 2)
-        grid.addWidget(ageEdit, 1, 3)
+        self.buttons['add'].clicked.connect(self.buttonClicked)
+        self.buttons['del'].clicked.connect(self.buttonClicked)
+        self.buttons['find'].clicked.connect(self.buttonClicked)
+        self.buttons['inc'].clicked.connect(self.buttonClicked)
+        self.buttons['show'].clicked.connect(self.buttonClicked)
 
 
-        grid.addWidget(score, 1, 4)
-        grid.addWidget(scoreEdit, 1, 5)
-
-        grid.addWidget(amount, 2, 0)
-        grid.addWidget(amountEdit, 2, 1)
-
-        grid.addWidget(result, 3, 0)
-        grid.addWidget(resultEdit, 10, 1, 10, 10)
-
-        self.setLayout(grid)
-       
-        
-        
-        # button add del find inc show
-        btn1 = QPushButton("Add", self)
-        btn1.move(100, 70)
-
-        btn2 = QPushButton("Del", self)
-        btn2.move(190, 70)
-        btn3 = QPushButton("Find", self)
-        btn3.move(280, 70)
-        btn4 = QPushButton("Inc", self)
-        btn4.move(370, 70)
-        btn5 = QPushButton("Show", self)
-        btn5.move(460, 70)
-        
-        btn1.clicked.connect(self.button1)
-        btn2.clicked.connect(self.button2)
-        btn3.clicked.connect(self.button3)
-        btn4.clicked.connect(self.button4)
-        btn5.clicked.connect(self.button5)
-
-        self.setGeometry(600, 600, 590, 450)
-        self.setWindowTitle("Event sender")
+        self.setGeometry(300, 300, 500, 250)
+        self.setWindowTitle('Assignment6')    
         self.show()
 
-    def onActivated(self, text):
-        self.lbl.setText(text)
-        self.lbl.adjustSize()
+    def buttonClicked(self):
+        sender = self.sender()
+        self.doScoreDB(sender.text())
 
-    def button1(self):
-        sender = self.sender()
-        '''record = {"Name":self.list2[0].text(), 'Age':self.list2[1].text(),'Score':self.list2[2].text()}
-        self.scdb +=[record]
-        self.resultEdit.setText("")
-        self.showScoreDB()
-'''
-    def button2(self):
-        sender = self.sender()
-    def button3(self):
-        sender = self.sender()
-    def button4(self):
-        sender = self.sender()
-    def button5(self):
-        sender = self.sender()
-
-        
     def closeEvent(self, event):
 
         self.writeScoreDB()
@@ -150,39 +86,68 @@ class ScoreDB(QWidget):
         try:
             fH = open(self.dbfilename, 'rb')
         except FileNotFoundError as e:
-            print("New:", self.dbfilname)
-            return []
-        self.scdb = []
+            self.scoredb = []
+            return
+
         try:
             self.scoredb =  pickle.load(fH)
         except:
-            print("Empty", self.dbfilename)
+            print('Empty DB: ', self.dbfilename)
         else:
-            print("Open:", self.dbfilename)
+            print('Open DB: ', self.dbfilename)
         fH.close()
-        
-        return self.scdb
+        return self.scoredb
 
-    # write the data into person db
     def writeScoreDB(self):
         fH = open(self.dbfilename, 'wb')
-        pickle.dump(self.scdb, fH)
+        pickle.dump(self.scoredb, fH)
         fH.close()
 
-    def showScoreDB(self):
-        for i in range(len(self.scdb)):
-            self.resultEdit.append("%s %29s %29s %29s %29s %29s %29s"%('Name', str(self.scdb[i]['Name']),
-                                                                   'Age', str(self.scdb[i]['Age']),
-                                                                   "Score", str(self.scdb[i]['Score'])))
-        
-        
+    def doScoreDB(self, order):
+        if order == 'Add':
+            record = {'Name': self.edits['name'].text(), 'Age': int(self.edits['age'].text()), 'Score': int(self.edits['age'].text())}
+            self.scoredb += [record]
+            self.showScoreDB(self.scoredb, self.key.currentText())
+
+        elif order == 'Del':
+            not_deleted = []
+            for p in self.scoredb:
+                if p['Name'] != self.edits['name'].text():
+                    not_deleted.append(p)
+                    check_del = True
+            self.scoredb = not_deleted
+            self.showScoreDB(self.scoredb, self.key.currentText())
+
+        elif order == 'show':
+            sortKey = self.key.currentText()
+            self.showScoreDB(self.scoredb, sortKey)
+
+        elif order == 'Find':
+            for p in self.scoredb:
+                if p['Name'] == self.edits['name'].text():
+                    text = ''
+                    for attr in sorted(p):
+                        text += attr + "=" + str(p[attr]) + '\t'
+                    text += '\n'
+                    self.edits['result'].setText(text)
+
+        elif order == 'Inc':
+            for p in self.scoredb:
+                if p['Name'] == self.edits['name'].text():
+                    p['Score'] += int(self.edits['amount'].text())
+            self.showScoreDB(self.scoredb, self.key.currentText())
+
+    def showScoreDB(self, scdb, keyname):
+        text_whole = ''
+        for p in sorted(scdb, key=lambda person: person[keyname]):
+            text_person = ''
+            for attr in sorted(p):
+                text_person += attr + " = " + str(p[attr]) + '\t'
+            text_whole += text_person + '\n'
+        self.edits['result'].setText(text_whole)
+
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)
     ex = ScoreDB()
     sys.exit(app.exec_())
-
-
-
-
-
