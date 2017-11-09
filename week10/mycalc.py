@@ -67,14 +67,9 @@ class Calculator(QWidget):
 
         numLayout = QGridLayout()
         numLayout.addWidget(self.digitButton[0],3,0)
-        j = 3
-        for i in range(10):
-            numLayout.addWidget(self.digitButton[i], j, (i-1)%3)
-            if (i)% 3 == 0:
-                j -=1
-            else:
-                j+0
-
+        for i in range(1, 10):
+            numLayout.addWidget(self.digitButton[i], int((9-i)/3), (i+2)%3)
+            
         numLayout.addWidget(self.decButton, 3, 1)
         numLayout.addWidget(self.eqButton, 3, 2)
 
@@ -102,20 +97,17 @@ class Calculator(QWidget):
         self.doButton(sender.text())
 
     def doButton(self, order):
-
-        if order != '=':
+        if order == '=':
+            self.txt = str(eval(self.txt))
+            self.display.setText(self.txt)
+        else:
             if order == 'C':
-                self.txt = ""
-                self.display.setText(self.txt)
+                self.display.setText('')
 
             else:
                 self.txt += order
                 self.display.setText(self.txt)
-        else:
-            self.txt = str(eval(self.txt))
-            self.display.setText(self.txt)
-
-
+                
 if __name__ == '__main__':
 
     import sys
