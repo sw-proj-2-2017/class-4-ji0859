@@ -68,7 +68,7 @@ class Calculator(QWidget):
         numLayout = QGridLayout()
         numLayout.addWidget(self.digitButton[0],3,0)
         for i in range(1, 10):
-            numLayout.addWidget(self.digitButton[i], int((9-i)/3), (i+2)%3)
+            numLayout.addWidget(self.digitButton[i], int((9 - i) // 3), (i + 2) % 3)
             
         numLayout.addWidget(self.decButton, 3, 1)
         numLayout.addWidget(self.eqButton, 3, 2)
